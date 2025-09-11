@@ -22,7 +22,9 @@
       padding: 10px 15px;
       border-radius: 8px;
       text-decoration: none;
+      margin-top: 10px;
     }
+    .btn-whatsapp { background: #25D366; }
   </style>
 </head>
 <body>
@@ -37,47 +39,67 @@
       <p><b>Procedimento:</b> <span id="procedimento"></span></p>
     </div>
     <a id="agendaLink" class="btn" target="_blank">➕ Adicionar ao Google Agenda</a>
+    <a id="whatsappLink" class="btn btn-whatsapp" target="_blank">✅ Confirmar pelo WhatsApp</a>
   </div>
 
   <p id="erro" style="display:none; color:red;">Agendamento não encontrado.</p>
 
   <script>
-    async function carregarAgendamento() {
+    const dados = [
+      {
+        "id": "123",
+        "paciente": "Laura Oliveira",
+        "profissional": "Pedro Dias",
+        "data": "2025-09-11",
+        "horaInicio": "17:50",
+        "horaFim": "18:50",
+        "procedimento": "Pilates Individual"
+      },
+      {
+        "id": "124",
+        "paciente": "Carlos Mendes",
+        "profissional": "Ana Souza",
+        "data": "2025-09-12",
+        "horaInicio": "10:00",
+        "horaFim": "11:00",
+        "procedimento": "Consulta Odontológica"
+      }
+    ];
+
+    function carregarAgendamento() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
 
-      try {
-        const resposta = await fetch("agendamentos.json");
-        const dados = await resposta.json();
+      const agendamento = dados.find(item => item.id === id);
 
-        const agendamento = dados.find(item => item.id === id);
-
-        if (!agendamento) {
-          document.getElementById("erro").style.display = "block";
-          return;
-        }
-
-        // Preencher os dados no card
-        document.getElementById("paciente").innerText = agendamento.paciente;
-        document.getElementById("profissional").innerText = agendamento.profissional;
-        document.getElementById("data").innerText = agendamento.data;
-        document.getElementById("hora").innerText = `${agendamento.horaInicio} - ${agendamento.horaFim}`;
-        document.getElementById("procedimento").innerText = agendamento.procedimento;
-
-        // Criar link do Google Agenda
-        const dataFormatada = agendamento.data.replace(/-/g, "");
-        const horaIni = agendamento.horaInicio.replace(":", "") + "00";
-        const horaFinal = agendamento.horaFim.replace(":", "") + "00";
-
-        const linkAgenda = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Consulta - " + agendamento.paciente)}&dates=${dataFormatada}T${horaIni}Z/${dataFormatada}T${horaFinal}Z&details=${encodeURIComponent(agendamento.procedimento + " - Profissional: " + agendamento.profissional)}&location=Clinica+ZenFisio`;
-
-        document.getElementById("agendaLink").href = linkAgenda;
-
-        // Mostrar card
-        document.getElementById("card").style.display = "block";
-      } catch (e) {
+      if (!agendamento) {
         document.getElementById("erro").style.display = "block";
+        return;
       }
+
+      document.getElementById("paciente").innerText = agendamento.paciente;
+      document.getElementById("profissional").innerText = agendamento.profissional;
+      document.getElementById("data").innerText = agendamento.data;
+      document.getElementById("hora").innerText = `${agendamento.horaInicio} - ${agendamento.horaFim}`;
+      document.getElementById("procedimento").innerText = agendamento.procedimento;
+
+      // Link do Google Agenda
+      const dataFormatada = agendamento.data.replace(/-/g, "");
+      const horaIni = agendamento.horaInicio.replace(":", "") + "00";
+      const horaFinal = agendamento.horaFim.replace(":", "") + "00";
+
+      const linkAgenda = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Consulta - " + agendamento.paciente)}&dates=${dataFormatada}T${horaIni}Z/${dataFormatada}T${horaFinal}Z&details=${encodeURIComponent(agendamento.procedimento + " - Profissional: " + agendamento.profissional)}&location=Clinica+ZenFisio`;
+
+      document.getElementById("agendaLink").href = linkAgenda;
+
+      // Link do WhatsApp
+      const numeroClinica = "5519987687285"; // Substitua pelo número da clínica com DDI + DDD
+      const mensagem = `Olá, aqui é ${agendamento.paciente}. Estou confirmando meu atendimento em ${agendamento.data} às ${agendamento.horaInicio} - ${agendamento.procedimento}.`;
+      const linkWhatsapp = `https://wa.me/${numeroClinica}?text=${encodeURIComponent(mensagem)}`;
+
+      document.getElementById("whatsappLink").href = linkWhatsapp;
+
+      document.getElementById("card").style.display = "block";
     }
 
     carregarAgendamento();
