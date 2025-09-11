@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
+      background: #F8ECDE;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -15,7 +15,7 @@
       margin: 0;
     }
     .card {
-      background: #fff;
+      background: #CDBBA3;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -23,7 +23,7 @@
       width: 320px;
     }
     h2 {
-      color: #4CAF50;
+      color: #BF8C6F;
     }
     p {
       margin: 10px 0;
@@ -71,7 +71,7 @@
 
   // Simulação de banco de dados
   const agendamentos = {
-    "123": { paciente: "Lidi Martins", data: "11/09/2025", hora: "15:00" },
+    "123": { paciente: "Luana Lucia", data: "11/09/2025", hora: "15:00" },
     "124": { paciente: "João Silva", data: "12/09/2025", hora: "10:00" }
   };
 
@@ -92,7 +92,7 @@
 
     // WhatsApp
     btnWhats.onclick = () => {
-      const mensagem = `Olá ${agendamento.paciente}, seu agendamento está confirmado para ${agendamento.data} às ${agendamento.hora}.`;
+      const mensagem = `Olá, boa tarde, eu ${agendamento.paciente}, confirmo meu agendamento para o dia ${agendamento.data} às ${agendamento.hora}.`;
       window.open(`https://wa.me/${clinicaWhats}?text=${encodeURIComponent(mensagem)}`, "_blank");
     };
 
@@ -111,5 +111,6 @@
 
 </body>
 </html>
+
 
 
