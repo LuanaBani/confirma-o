@@ -2,107 +2,120 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Confirmação de Agendamento</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; display:flex; justify-content:center; align-items:center; height:100vh; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
     .card {
       background: #fff;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 400px;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: center;
+      width: 320px;
     }
-    .card h2 { color: #2c7a2c; }
-    .info { text-align: left; margin: 15px 0; }
-    .btn {
-      display: inline-block;
-      background: #2c7a2c;
+    h2 {
+      color: #4CAF50;
+    }
+    p {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 5px;
       color: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      text-decoration: none;
-      margin-top: 10px;
+      cursor: pointer;
+      font-size: 16px;
     }
-    .btn-whatsapp { background: #25D366; }
+    .whatsapp {
+      background-color: #25D366;
+    }
+    .agenda {
+      background-color: #4285F4;
+    }
   </style>
 </head>
 <body>
-  <div class="card" id="card" style="display:none;">
-    <h2>Atendimento Confirmado ✅</h2>
-    <p>Esperamos por você!</p>
-    <div class="info">
-      <p><b>Paciente:</b> <span id="paciente"></span></p>
-      <p><b>Profissional:</b> <span id="profissional"></span></p>
-      <p><b>Data:</b> <span id="data"></span></p>
-      <p><b>Horário:</b> <span id="hora"></span></p>
-      <p><b>Procedimento:</b> <span id="procedimento"></span></p>
-    </div>
-    <a id="agendaLink" class="btn" target="_blank">➕ Adicionar ao Google Agenda</a>
-    <a id="whatsappLink" class="btn btn-whatsapp" target="_blank">✅ Confirmar pelo WhatsApp</a>
-  </div>
 
-  <p id="erro" style="display:none; color:red;">Agendamento não encontrado.</p>
+<div class="card" id="agendamentoCard">
+  <h2>Agendamento não encontrado</h2>
+  <p id="paciente"></p>
+  <p id="data"></p>
+  <p id="hora"></p>
+  <button class="whatsapp" id="btnWhats">Confirmar pelo WhatsApp</button>
+  <button class="agenda" id="btnAgenda">Adicionar ao Google Agenda</button>
+</div>
 
-  <script>
-    const dados = [
-      {
-        "id": "123",
-        "paciente": "Laura Oliveira",
-        "profissional": "Pedro Dias",
-        "data": "2025-09-11",
-        "horaInicio": "17:50",
-        "horaFim": "18:50",
-        "procedimento": "Pilates Individual"
-      },
-      {
-        "id": "124",
-        "paciente": "Carlos Mendes",
-        "profissional": "Ana Souza",
-        "data": "2025-09-12",
-        "horaInicio": "10:00",
-        "horaFim": "11:00",
-        "procedimento": "Consulta Odontológica"
-      }
-    ];
+<script>
+  // Pegando o ID da URL
+  const params = new URLSearchParams(window.location.search);
+  let id = params.get("id");
 
-    function carregarAgendamento() {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+  // Fallback para teste
+  if (!id) {
+    id = "123"; // id de teste
+  }
 
-      const agendamento = dados.find(item => item.id === id);
-
-      if (!agendamento) {
-        document.getElementById("erro").style.display = "block";
-        return;
-      }
-
-      document.getElementById("paciente").innerText = agendamento.paciente;
-      document.getElementById("profissional").innerText = agendamento.profissional;
-      document.getElementById("data").innerText = agendamento.data;
-      document.getElementById("hora").innerText = `${agendamento.horaInicio} - ${agendamento.horaFim}`;
-      document.getElementById("procedimento").innerText = agendamento.procedimento;
-
-      // Link do Google Agenda
-      const dataFormatada = agendamento.data.replace(/-/g, "");
-      const horaIni = agendamento.horaInicio.replace(":", "") + "00";
-      const horaFinal = agendamento.horaFim.replace(":", "") + "00";
-
-      const linkAgenda = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Consulta - " + agendamento.paciente)}&dates=${dataFormatada}T${horaIni}Z/${dataFormatada}T${horaFinal}Z&details=${encodeURIComponent(agendamento.procedimento + " - Profissional: " + agendamento.profissional)}&location=Clinica+ZenFisio`;
-
-      document.getElementById("agendaLink").href = linkAgenda;
-
-      // Link do WhatsApp
-      const numeroClinica = "5519987687285"; // Substitua pelo número da clínica com DDI + DDD
-      const mensagem = `Olá, aqui é ${agendamento.paciente}. Estou confirmando meu atendimento em ${agendamento.data} às ${agendamento.horaInicio} - ${agendamento.procedimento}.`;
-      const linkWhatsapp = `https://wa.me/${numeroClinica}?text=${encodeURIComponent(mensagem)}`;
-
-      document.getElementById("whatsappLink").href = linkWhatsapp;
-
-      document.getElementById("card").style.display = "block";
+  // Simulação de banco de dados
+  const agendamentos = {
+    "123": {
+      paciente: "Lidi Martins",
+      data: "11/09/2025",
+      hora: "15:00",
+      telefone: "+5511999999999"
+    },
+    "124": {
+      paciente: "João Silva",
+      data: "12/09/2025",
+      hora: "10:00",
+      telefone: "+5511988888888"
     }
+  };
 
-    carregarAgendamento();
-  </script>
+  const agendamento = agendamentos[id];
+
+  const card = document.getElementById("agendamentoCard");
+  const pacienteEl = document.getElementById("paciente");
+  const dataEl = document.getElementById("data");
+  const horaEl = document.getElementById("hora");
+  const btnWhats = document.getElementById("btnWhats");
+  const btnAgenda = document.getElementById("btnAgenda");
+
+  if (agendamento) {
+    card.querySelector("h2").textContent = "Confirmação de Agendamento";
+    pacienteEl.textContent = "Paciente: " + agendamento.paciente;
+    dataEl.textContent = "Data: " + agendamento.data;
+    horaEl.textContent = "Hora: " + agendamento.hora;
+
+    // WhatsApp
+    btnWhats.onclick = () => {
+      const mensagem = `Olá ${agendamento.paciente}, seu agendamento está confirmado para ${agendamento.data} às ${agendamento.hora}.`;
+      window.open(`https://wa.me/${agendamento.telefone}?text=${encodeURIComponent(mensagem)}`, "_blank");
+    };
+
+    // Google Agenda
+    btnAgenda.onclick = () => {
+      const dataSplit = agendamento.data.split("/");
+      const horaSplit = agendamento.hora.split(":");
+      const start = new Date(dataSplit[2], dataSplit[1]-1, dataSplit[0], horaSplit[0], horaSplit[1]);
+      const end = new Date(start.getTime() + 30*60*1000); // 30 minutos de duração
+      const formatDate = (d) => d.toISOString().replace(/-|:|\.\d\d\d/g,"");
+      const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=Consulta com ${agendamento.paciente}&dates=${formatDate(start)}/${formatDate(end)}&details=Agendamento confirmado&sf=true&output=xml`;
+      window.open(url, "_blank");
+    };
+
+  }
+</script>
+
 </body>
 </html>
