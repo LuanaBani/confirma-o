@@ -57,6 +57,9 @@
 </div>
 
 <script>
+  // Coloque aqui o WhatsApp da sua clínica
+  const clinicaWhats = "+5519987687285"; // <--- seu número
+
   // Pegando o ID da URL
   const params = new URLSearchParams(window.location.search);
   let id = params.get("id");
@@ -68,18 +71,8 @@
 
   // Simulação de banco de dados
   const agendamentos = {
-    "123": {
-      paciente: "Lidi Martins",
-      data: "11/09/2025",
-      hora: "15:00",
-      telefone: "+5511999999999"
-    },
-    "124": {
-      paciente: "João Silva",
-      data: "12/09/2025",
-      hora: "10:00",
-      telefone: "+5511988888888"
-    }
+    "123": { paciente: "Lidi Martins", data: "11/09/2025", hora: "15:00" },
+    "124": { paciente: "João Silva", data: "12/09/2025", hora: "10:00" }
   };
 
   const agendamento = agendamentos[id];
@@ -100,7 +93,7 @@
     // WhatsApp
     btnWhats.onclick = () => {
       const mensagem = `Olá ${agendamento.paciente}, seu agendamento está confirmado para ${agendamento.data} às ${agendamento.hora}.`;
-      window.open(`https://wa.me/${agendamento.telefone}?text=${encodeURIComponent(mensagem)}`, "_blank");
+      window.open(`https://wa.me/${clinicaWhats}?text=${encodeURIComponent(mensagem)}`, "_blank");
     };
 
     // Google Agenda
@@ -113,9 +106,10 @@
       const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=Consulta com ${agendamento.paciente}&dates=${formatDate(start)}/${formatDate(end)}&details=Agendamento confirmado&sf=true&output=xml`;
       window.open(url, "_blank");
     };
-
   }
 </script>
 
 </body>
 </html>
+
+
