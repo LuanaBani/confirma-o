@@ -1,0 +1,20 @@
+[
+  {
+    "id": "123",
+    "paciente": "Laura Oliveira",
+    "profissional": "Pedro Dias",
+    "data": "2025-09-11",
+    "horaInicio": "17:50",
+    "horaFim": "18:50",
+    "procedimento": "Pilates Individual"
+  },
+  {
+    "id": "124",
+    "paciente": "Carlos Mendes",
+    "profissional": "Ana Souza",
+    "data": "2025-09-12",
+    "horaInicio": "10:00",
+    "horaFim": "11:00",
+    "procedimento": "Consulta Odontológica"
+  }
+]

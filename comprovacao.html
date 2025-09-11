@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirmação de Agendamento</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; display:flex; justify-content:center; align-items:center; height:100vh; }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+      text-align: center;
+    }
+    .card h2 { color: #2c7a2c; }
+    .info { text-align: left; margin: 15px 0; }
+    .btn {
+      display: inline-block;
+      background: #2c7a2c;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card" style="display:none;">
+    <h2>Atendimento Confirmado ✅</h2>
+    <p>Esperamos por você!</p>
+    <div class="info">
+      <p><b>Paciente:</b> <span id="paciente"></span></p>
+      <p><b>Profissional:</b> <span id="profissional"></span></p>
+      <p><b>Data:</b> <span id="data"></span></p>
+      <p><b>Horário:</b> <span id="hora"></span></p>
+      <p><b>Procedimento:</b> <span id="procedimento"></span></p>
+    </div>
+    <a id="agendaLink" class="btn" target="_blank">➕ Adicionar ao Google Agenda</a>
+  </div>
+
+  <p id="erro" style="display:none; color:red;">Agendamento não encontrado.</p>
+
+  <script>
+    async function carregarAgendamento() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      try {
+        const resposta = await fetch("agendamentos.json");
+        const dados = await resposta.json();
+
+        const agendamento = dados.find(item => item.id === id);
+
+        if (!agendamento) {
+          document.getElementById("erro").style.display = "block";
+          return;
+        }
+
+        // Preencher os dados no card
+        document.getElementById("paciente").innerText = agendamento.paciente;
+        document.getElementById("profissional").innerText = agendamento.profissional;
+        document.getElementById("data").innerText = agendamento.data;
+        document.getElementById("hora").innerText = `${agendamento.horaInicio} - ${agendamento.horaFim}`;
+        document.getElementById("procedimento").innerText = agendamento.procedimento;
+
+        // Criar link do Google Agenda
+        const dataFormatada = agendamento.data.replace(/-/g, "");
+        const horaIni = agendamento.horaInicio.replace(":", "") + "00";
+        const horaFinal = agendamento.horaFim.replace(":", "") + "00";
+
+        const linkAgenda = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Consulta - " + agendamento.paciente)}&dates=${dataFormatada}T${horaIni}Z/${dataFormatada}T${horaFinal}Z&details=${encodeURIComponent(agendamento.procedimento + " - Profissional: " + agendamento.profissional)}&location=Clinica+ZenFisio`;
+
+        document.getElementById("agendaLink").href = linkAgenda;
+
+        // Mostrar card
+        document.getElementById("card").style.display = "block";
+      } catch (e) {
+        document.getElementById("erro").style.display = "block";
+      }
+    }
+
+    carregarAgendamento();
+  </script>
+</body>
+</html>
